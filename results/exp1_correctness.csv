@@ -1,0 +1,4 @@
+implementation,accuracy,matches_baseline
+sequential,0.6,True
+spark_rdd,0.6,True
+spark_df,0.6,True

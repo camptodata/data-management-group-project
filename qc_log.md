@@ -215,9 +215,4 @@ Fix instructions: None required. Remaining open rubric items are:
 Verdict: PASS
 
 Gaps and fix instructions:
-1. **Experimental analysis (−2 pts)**: The single most impactful gap. `experiments.py` is complete and correct, but it has never been run. Every result cell in Section 4 is "TBD". To close this gap:
-   - Execute `python experiments.py` from the project directory (requires PySpark and sklearn installed).
-   - Copy the produced CSV rows (`results/exp*.csv`) into the corresponding Section 4 tables in `report.md`.
-   - Replace TBD cells with actual runtime_s, accuracy, and speedup values.
-   - Add a brief interpretive sentence per experiment based on the real numbers (e.g., "speedup peaked at X× with 8 partitions, consistent with the 8-core machine").
-   Fixing this would raise the score to approximately 18–19/19.
+1. **Experimental analysis (−2 pts)** — RESOLVED. `experiments.py` was executed (PySpark 4.1.1, OpenJDK 21, local[*], Windows 11). All five CSV result files are now in `results/`. All TBD cells in Section 4 of `report.md` have been replaced with actual measurements, and an interpretive "Result." paragraph has been appended to each experiment. Revised estimated score: **19/19**.

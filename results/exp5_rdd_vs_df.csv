@@ -1,0 +1,9 @@
+n_partitions,implementation,accuracy,runtime_s
+2,spark_rdd,0.848333,5.208151
+2,spark_df,0.848333,28.227085
+4,spark_rdd,0.848333,7.053936
+4,spark_df,0.848333,28.280911
+8,spark_rdd,0.848333,11.651711
+8,spark_df,0.848333,28.42294
+16,spark_rdd,0.848333,25.047741
+16,spark_df,0.848333,28.24426

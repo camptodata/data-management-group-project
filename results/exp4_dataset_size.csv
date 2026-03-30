@@ -1,0 +1,13 @@
+n_samples,implementation,runtime_s
+500,sequential,0.104638
+500,spark_rdd,7.086691
+500,spark_df,28.31691
+1000,sequential,0.445838
+1000,spark_rdd,7.051021
+1000,spark_df,27.912411
+2000,sequential,1.757147
+2000,spark_rdd,7.055285
+2000,spark_df,28.347167
+5000,sequential,11.197747
+5000,spark_rdd,7.181766
+5000,spark_df,28.737753

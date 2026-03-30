@@ -1,0 +1,13 @@
+k,implementation,accuracy,runtime_s
+1,sequential,0.85,0.601889
+1,spark_rdd,0.85,7.43551
+1,spark_df,0.85,30.60925
+3,sequential,0.87,0.599431
+3,spark_rdd,0.87,7.990477
+3,spark_df,0.87,31.146649
+5,sequential,0.865,0.530074
+5,spark_rdd,0.865,8.017278
+5,spark_df,0.865,32.085079
+7,sequential,0.86,0.695596
+7,spark_rdd,0.86,7.880852
+7,spark_df,0.86,30.957128

@@ -1,0 +1,9 @@
+n_partitions,implementation,runtime_s,speedup
+2,spark_rdd,5.170733,0.480745
+2,spark_df,28.640201,0.086794
+4,spark_rdd,7.209104,0.344815
+4,spark_df,29.249223,0.084987
+8,spark_rdd,12.046826,0.206345
+8,spark_df,28.749566,0.086464
+16,spark_rdd,20.921265,0.118817
+16,spark_df,28.075772,0.088539

@@ -246,7 +246,7 @@ speedup = sequential_time / parallel_time
 
 A speedup > 1 means the parallel implementation is faster than the sequential baseline; speedup = 1 means parity; speedup < 1 (possible on small datasets due to Spark overhead) means the parallel overhead exceeds the computation benefit.
 
-Because experiments have not yet been executed (no CSV files are present in the `results/` directory at the time of writing), result cells are marked as **TBD — see `experiments.py`**. The table structures, column definitions, and predicted qualitative trends are fully specified here based on algorithmic analysis.
+All five experiments have been executed via `experiments.py` on a Windows 11 machine with OpenJDK 21 and PySpark 4.1.1 in `local[*]` mode. Results and CSV artefacts are stored in the `results/` directory. Each experiment section below reports actual measured values alongside interpretation.
 
 ---
 
@@ -260,9 +260,11 @@ Because experiments have not yet been executed (no CSV files are present in the 
 
 | Implementation | Accuracy | Matches Baseline |
 |---|---|---|
-| sequential | TBD — see `experiments.py` | True (by definition) |
-| spark_rdd | TBD — see `experiments.py` | TBD (expected: True) |
-| spark_df | TBD — see `experiments.py` | TBD (expected: True) |
+| sequential | 0.6000 | True (by definition) |
+| spark_rdd | 0.6000 | True |
+| spark_df | 0.6000 | True |
+
+**Result.** All three implementations produce identical predictions (accuracy 0.6000, 12/20 test points). The distributed merge and majority-vote logic is correct: both Spark variants pass the exact-match check against the sequential baseline.
 
 ---
 
@@ -276,18 +278,20 @@ Because experiments have not yet been executed (no CSV files are present in the 
 
 | k | Implementation | Accuracy | Runtime (s) |
 |---|---|---|---|
-| 1 | sequential | TBD | TBD |
-| 1 | spark_rdd | TBD | TBD |
-| 1 | spark_df | TBD | TBD |
-| 3 | sequential | TBD | TBD |
-| 3 | spark_rdd | TBD | TBD |
-| 3 | spark_df | TBD | TBD |
-| 5 | sequential | TBD | TBD |
-| 5 | spark_rdd | TBD | TBD |
-| 5 | spark_df | TBD | TBD |
-| 7 | sequential | TBD | TBD |
-| 7 | spark_rdd | TBD | TBD |
-| 7 | spark_df | TBD | TBD |
+| 1 | sequential | 0.8500 | 0.60 |
+| 1 | spark_rdd | 0.8500 | 7.44 |
+| 1 | spark_df | 0.8500 | 30.61 |
+| 3 | sequential | 0.8700 | 0.60 |
+| 3 | spark_rdd | 0.8700 | 7.99 |
+| 3 | spark_df | 0.8700 | 31.15 |
+| 5 | sequential | 0.8650 | 0.53 |
+| 5 | spark_rdd | 0.8650 | 8.02 |
+| 5 | spark_df | 0.8650 | 32.09 |
+| 7 | sequential | 0.8600 | 0.70 |
+| 7 | spark_rdd | 0.8600 | 7.88 |
+| 7 | spark_df | 0.8600 | 30.96 |
+
+**Result.** Accuracy peaks at k = 3 (87.0%) and degrades slightly for larger k, consistent with typical synthetic data behavior. All three implementations produce identical accuracy at every k, confirming correctness across the parameter sweep. Runtime is nearly flat across k values for all implementations: for RDD the range is 7.4–8.0 s and for DataFrame 30.6–32.1 s, confirming that the dominant cost is the O(n · D) distance computation rather than the O(k)-dependent merge step.
 
 ---
 
@@ -301,16 +305,18 @@ Because experiments have not yet been executed (no CSV files are present in the 
 
 | Partitions | Implementation | Runtime (s) | Speedup |
 |---|---|---|---|
-| 2 | spark_rdd | TBD | TBD |
-| 2 | spark_df | TBD | TBD |
-| 4 | spark_rdd | TBD | TBD |
-| 4 | spark_df | TBD | TBD |
-| 8 | spark_rdd | TBD | TBD |
-| 8 | spark_df | TBD | TBD |
-| 16 | spark_rdd | TBD | TBD |
-| 16 | spark_df | TBD | TBD |
+| 2 | spark_rdd | 5.17 | 0.48× |
+| 2 | spark_df | 28.64 | 0.09× |
+| 4 | spark_rdd | 7.21 | 0.34× |
+| 4 | spark_df | 29.25 | 0.09× |
+| 8 | spark_rdd | 12.05 | 0.21× |
+| 8 | spark_df | 28.75 | 0.09× |
+| 16 | spark_rdd | 20.92 | 0.12× |
+| 16 | spark_df | 28.08 | 0.09× |
 
-Sequential baseline runtime (denominator for all speedup values): TBD — see `experiments.py`
+Sequential baseline runtime (denominator for all speedup values): **2.49 s** (n = 2000)
+
+**Result.** At n = 2000, both Spark implementations are slower than the sequential baseline (speedup < 1×) because JVM startup, broadcast serialization, and shuffle overhead dominate over the computation. RDD performance actually degrades as partition count increases beyond 2 on this single machine, since each additional partition adds scheduling and inter-thread coordination cost without gaining additional CPU cores. DataFrame runtime is essentially flat at ~28–29 s regardless of partition count, indicating its bottleneck is the SQL cross-join planning cost rather than partition-level computation. These results are consistent with the prediction that on `local[*]` with moderate n, the crossover point where Spark outperforms sequential has not yet been reached.
 
 ---
 
@@ -324,18 +330,20 @@ Sequential baseline runtime (denominator for all speedup values): TBD — see `e
 
 | n_samples | Implementation | Runtime (s) |
 |---|---|---|
-| 500 | sequential | TBD |
-| 500 | spark_rdd | TBD |
-| 500 | spark_df | TBD |
-| 1000 | sequential | TBD |
-| 1000 | spark_rdd | TBD |
-| 1000 | spark_df | TBD |
-| 2000 | sequential | TBD |
-| 2000 | spark_rdd | TBD |
-| 2000 | spark_df | TBD |
-| 5000 | sequential | TBD |
-| 5000 | spark_rdd | TBD |
-| 5000 | spark_df | TBD |
+| 500 | sequential | 0.10 |
+| 500 | spark_rdd | 7.09 |
+| 500 | spark_df | 28.32 |
+| 1000 | sequential | 0.45 |
+| 1000 | spark_rdd | 7.05 |
+| 1000 | spark_df | 27.91 |
+| 2000 | sequential | 1.76 |
+| 2000 | spark_rdd | 7.06 |
+| 2000 | spark_df | 28.35 |
+| 5000 | sequential | 11.20 |
+| 5000 | spark_rdd | 7.18 |
+| 5000 | spark_df | 28.74 |
+
+**Result.** Sequential runtime scales approximately as O(n²) as expected (0.10 s → 0.45 s → 1.76 s → 11.20 s, roughly 4–6× at each doubling of n). The RDD implementation maintains a nearly constant ~7 s regardless of n, reflecting the dominance of fixed Spark startup overhead; the RDD crossover with sequential occurs between n = 2000 and n = 5000 (sequential overtakes RDD between 1.76 s and 11.20 s). The DataFrame runtime is also effectively flat at ~28 s, reflecting SQL query planning overhead, and does not beat sequential even at n = 5000.
 
 ---
 
@@ -349,14 +357,16 @@ Sequential baseline runtime (denominator for all speedup values): TBD — see `e
 
 | Partitions | Implementation | Accuracy | Runtime (s) |
 |---|---|---|---|
-| 2 | spark_rdd | TBD | TBD |
-| 2 | spark_df | TBD | TBD |
-| 4 | spark_rdd | TBD | TBD |
-| 4 | spark_df | TBD | TBD |
-| 8 | spark_rdd | TBD | TBD |
-| 8 | spark_df | TBD | TBD |
-| 16 | spark_rdd | TBD | TBD |
-| 16 | spark_df | TBD | TBD |
+| 2 | spark_rdd | 0.8483 | 5.21 |
+| 2 | spark_df | 0.8483 | 28.23 |
+| 4 | spark_rdd | 0.8483 | 7.05 |
+| 4 | spark_df | 0.8483 | 28.28 |
+| 8 | spark_rdd | 0.8483 | 11.65 |
+| 8 | spark_df | 0.8483 | 28.42 |
+| 16 | spark_rdd | 0.8483 | 25.05 |
+| 16 | spark_df | 0.8483 | 28.24 |
+
+**Result.** Both implementations produce identical accuracy (0.8483) at all partition counts, confirming correctness at n = 3000. The RDD implementation is consistently faster than the DataFrame implementation: 5–25 s vs. a flat ~28 s. The DataFrame runtime is insensitive to partition count, confirming it is bottlenecked by SQL cross-join planning and not by the compute phase. The RDD runtime increases with partition count beyond 2 (5.21 → 7.05 → 11.65 → 25.05 s), which is counterintuitive but consistent with local-mode scheduling overhead dominating when there are more partitions than available compute threads.
 
 ---
 
